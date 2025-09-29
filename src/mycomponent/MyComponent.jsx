@@ -286,10 +286,16 @@ const MyComponent = () => {
                 <Linkedin size={24} />
                 <span>LinkedIn</span>
               </a>
-              <a href="mailto:sanketfulzelek6@gmail.com" className="social-link">
+              <a
+                href="mailto:sanketfulzelek6@gmail.com"
+                className="social-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Mail size={24} />
                 <span>Email</span>
               </a>
+
             </div>
           </div>
         </div>
