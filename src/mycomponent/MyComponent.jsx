@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Github, Linkedin, Mail, Phone, MapPin, ExternalLink, Code, Briefcase, GraduationCap, Rocket } from 'lucide-react';
-import './myComponent.css';
+import './mycomponent.css';
 
 const MyComponent = () => {
   const [scrollY, setScrollY] = useState(0);
