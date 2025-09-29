@@ -3,10 +3,10 @@ import MyComponent from './mycomponent/MyComponent'
 
 
 function App() {
-  
+
   return (
     <>
- <MyComponent/>
+      <MyComponent />
     </>
   )
 }
