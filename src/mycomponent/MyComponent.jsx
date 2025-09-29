@@ -1,8 +1,10 @@
 import React from 'react'
+import './mycomponent.css'
+
 
 const MyComponent = () => {
   return (
-    <div>MyComponent</div>
+    <h1>MyComponent</h1>
   )
 }
 

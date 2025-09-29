@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import MyComponent from './assets/mycomponent/MyComponent'
+import MyComponent from './mycomponent/MyComponent'
 
 
 function App() {
