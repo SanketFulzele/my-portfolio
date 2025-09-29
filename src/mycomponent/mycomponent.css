@@ -883,7 +883,7 @@ html {
 }
 
 /* Selection Color */
-::selection {
+/* ::selection {
   background: var(--primary);
   color: white;
 }
@@ -891,7 +891,7 @@ html {
 ::-moz-selection {
   background: var(--primary);
   color: white;
-}
+} */
 
 /* Scrollbar */
 ::-webkit-scrollbar {
