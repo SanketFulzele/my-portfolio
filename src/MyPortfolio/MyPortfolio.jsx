@@ -50,33 +50,74 @@ const MyPortfolio = () => {
   };
 
   const EMAILJS_SERVICE_ID = 'service_601xgns';      // From EmailJS dashboard
-const EMAILJS_TEMPLATE_ID = 'template_e2gmjpe';    // From EmailJS dashboard
-const EMAILJS_PUBLIC_KEY = 'EvbYF4NbsZxLWe5Me';      // From EmailJS dashboard
+  const EMAILJS_PUBLIC_KEY = 'EvbYF4NbsZxLWe5Me';      // From EmailJS dashboard
+  const EMAILJS_TEMPLATE_ID = 'template_e2gmjpe';    // From EmailJS dashboard
+const EMAILJS_THANKS_TEMPLATE_ID = 'template_rmlqiud';    // From EmailJS dashboard
 
- const handleFormSubmit = async (e) => {
+//  const handleFormSubmit = async (e) => {
+//   e.preventDefault();
+//   setLoading(true);
+  
+//   try {
+//     // Send email using EmailJS
+//     const result = await emailjs.send(
+//       EMAILJS_SERVICE_ID,
+//       EMAILJS_TEMPLATE_ID,
+//       {
+//         from_email: formData.email,      // Sender's email
+//         subject: formData.subject,        // Email subject
+//         message: formData.description,    // Email message/description
+//         to_email: 'sanketfulzelek6@gmail.com' // Your Gmail (recipient)
+//       },
+//       EMAILJS_PUBLIC_KEY
+//     );
+
+//     toast.success('Email sent successfully!');
+    
+//     // Reset form on success
+//     setFormData({ email: '', subject: '', description: '' });
+    
+//   } catch (error) {
+//     console.error('Error sending email:', error);
+//     toast.error('Failed to send email. Please try again.');
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+
+const handleFormSubmit = async (e) => {
   e.preventDefault();
   setLoading(true);
-  
+
   try {
-    // Send email using EmailJS
-    const result = await emailjs.send(
+    // 1️⃣ Send main message to yourself
+    await emailjs.send(
       EMAILJS_SERVICE_ID,
       EMAILJS_TEMPLATE_ID,
       {
         from_email: formData.email,      // Sender's email
         subject: formData.subject,        // Email subject
         message: formData.description,    // Email message/description
-        to_email: 'sanketfulzelek6@gmail.com' // Your Gmail (recipient)
+        to_email: 'sanketfulzelek6@gmail.com' // Your Gmail
       },
       EMAILJS_PUBLIC_KEY
     );
 
-    console.log('Email sent successfully:', result);
+    // 2️⃣ Send automated "thank you" reply to sender
+    await emailjs.send(
+      EMAILJS_SERVICE_ID,
+      EMAILJS_THANKS_TEMPLATE_ID,
+      {
+        from_email: 'sanketfulzelek6@gmail.com', // Your email for the reply
+        to_email: formData.email,                // Sender's email
+        sender_email: formData.email               // Sender's email
+      },
+      EMAILJS_PUBLIC_KEY
+    );
+
     toast.success('Email sent successfully!');
-    
-    // Reset form on success
     setFormData({ email: '', subject: '', description: '' });
-    
+
   } catch (error) {
     console.error('Error sending email:', error);
     toast.error('Failed to send email. Please try again.');
@@ -84,6 +125,7 @@ const EMAILJS_PUBLIC_KEY = 'EvbYF4NbsZxLWe5Me';      // From EmailJS dashboard
     setLoading(false);
   }
 };
+
 
   const skills = [
     'React.js', 'Next.js', 'TypeScript', 'Redux', 'JavaScript',
