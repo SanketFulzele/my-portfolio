@@ -83,6 +83,19 @@ const MyPortfolio = () => {
       setFormData({ email: '', subject: '', description: '' });
   };
 
+  const fetchPortfolioData = async () => {
+  try {
+    const response = await fetch("https://my-portfolio-api-3tz5.onrender.com/");
+    if (!response.ok) {
+      throw new Error("API request failed");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching API:", error);
+    return null;
+  }
+};
+
 
   const skills = [
     'React.js', 'Next.js', 'TypeScript', 'Redux', 'JavaScript',
@@ -194,7 +207,7 @@ const MyPortfolio = () => {
         <div className="hero-content">
           <div className="hero-text">
             <div className="hero-greeting">Hi, I'm</div>
-            <h1 className="hero-name">Sanket Fulzele</h1>
+            <h1 className="hero-name" onClick={fetchPortfolioData}>Sanket Fulzele</h1>
             <div className="hero-title">
               <span className="typing-text">Front-End Developer</span>
             </div>
