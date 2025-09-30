@@ -5,9 +5,8 @@ import "react-toastify/dist/ReactToastify.css";
 function App() {
   return (
     <>
-      <MyPortfolio/>
+      <MyPortfolio />
       <ToastContainer position="top-right" autoClose={3000} />
-
     </>
   )
 }
