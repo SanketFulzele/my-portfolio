@@ -1,12 +1,13 @@
-import { useState } from 'react'
-import MyComponent from './mycomponent/MyComponent'
 import MyPortfolio from './MyPortfolio/MyPortfolio'
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
     <>
-      {/* <MyComponent /> */}
       <MyPortfolio/>
+      <ToastContainer position="top-right" autoClose={3000} />
+
     </>
   )
 }

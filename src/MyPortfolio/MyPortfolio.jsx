@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Github, Linkedin, Mail, Phone, MapPin, ExternalLink, Code, Briefcase, GraduationCap, Rocket, Menu, X, Send } from 'lucide-react';
 import "./myportfolio.css";
+import { toast } from "react-toastify";
 
 const MyPortfolio = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -11,12 +12,13 @@ const MyPortfolio = () => {
     subject: '',
     description: ''
   });
-  const [formStatus, setFormStatus] = useState('');
+  const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
-      
+
       const sections = ['home', 'about', 'experience', 'projects', 'contact'];
       const current = sections.find(section => {
         const element = document.getElementById(section);
@@ -46,22 +48,41 @@ const MyPortfolio = () => {
     });
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    
-    // Create mailto link with form data
-    const mailtoLink = `mailto:sanketfulzelek6@gmail.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(`From: ${formData.email}\n\n${formData.description}`)}`;
-    console.log(mailtoLink, "mymailtolink");
-    window.location.href = mailtoLink;
-    
-    setFormStatus('Opening your email client...');
-    
-    // Reset form after a delay
-    setTimeout(() => {
+    setLoading(true);
+    try {
+      // const response = await fetch('http://localhost:5000/api/send-email', {
+      const response = await fetch('https://my-portfolio-backend-a45z.onrender.com/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          subject: formData.subject,
+          description: formData.description,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success('Email sent successfully!');
+      } else {
+        toast.error(`Error: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Error sending email:', error);
+      toast.error('Failed to send email');
+    } finally {
+      setLoading(false);
+    }
+
+    // Reset form 
       setFormData({ email: '', subject: '', description: '' });
-      setFormStatus('');
-    }, 2000);
   };
+
 
   const skills = [
     'React.js', 'Next.js', 'TypeScript', 'Redux', 'JavaScript',
@@ -207,12 +228,12 @@ const MyPortfolio = () => {
           <div className="about-content">
             <div className="about-text">
               <p>
-                Front-End Developer with 3+ years of experience in designing, developing, and optimizing responsive web applications. 
+                Front-End Developer with 3+ years of experience in designing, developing, and optimizing responsive web applications.
                 Proficient in React.js, Next.js, PWA, Redux, and modern front-end technologies.
               </p>
               <p>
-                Skilled in performance optimization, scalability, responsive design, and SEO optimization, with strong expertise 
-                in integrating REST APIs and deploying applications using CI/CD pipelines. Proven ability to write clean, 
+                Skilled in performance optimization, scalability, responsive design, and SEO optimization, with strong expertise
+                in integrating REST APIs and deploying applications using CI/CD pipelines. Proven ability to write clean,
                 maintainable code and collaborate with cross-functional teams.
               </p>
               <div className="contact-info">
@@ -318,8 +339,8 @@ const MyPortfolio = () => {
             <p className="contact-text">
               I'm always open to discussing new projects, creative ideas, or opportunities to be part of your visions.
             </p>
-            
-            {/* <form className="contact-form" onSubmit={handleFormSubmit}>
+
+            <form className="contact-form" onSubmit={handleFormSubmit}>
               <div className="form-group">
                 <label htmlFor="email">Your Email</label>
                 <input
@@ -332,7 +353,7 @@ const MyPortfolio = () => {
                   required
                 />
               </div>
-              
+
               <div className="form-group">
                 <label htmlFor="subject">Subject</label>
                 <input
@@ -345,7 +366,7 @@ const MyPortfolio = () => {
                   required
                 />
               </div>
-              
+
               <div className="form-group">
                 <label htmlFor="description">Message</label>
                 <textarea
@@ -358,15 +379,15 @@ const MyPortfolio = () => {
                   required
                 ></textarea>
               </div>
-              
-              <button type="submit" className="btn btn-primary submit-btn">
-                <Send size={20} />
-                Send Message
+
+              <button type="submit" disabled={loading} className="btn btn-primary submit-btn">
+
+                {loading ? <> <span className="spinner"></span> Loading </>
+                  : <><Send size={20} /> Send Message </>}
               </button>
-              
-              {formStatus && <p className="form-status">{formStatus}</p>}
-            </form> */}
-            
+
+            </form>
+
             <div className="social-links">
               <a href="https://github.com/SanketFulzele" target="_blank" rel="noopener noreferrer" className="social-link">
                 <Github size={24} />
