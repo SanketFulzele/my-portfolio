@@ -53,7 +53,7 @@ const MyPortfolio = () => {
     setLoading(true);
     try {
       // const response = await fetch('http://localhost:5000/api/send-email', {
-      const response = await fetch('https://my-portfolio-backend-a45z.onrender.com/api/send-email', {
+      const response = await fetch('https://my-portfolio-api-3tz5.onrender.com//api/send-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
