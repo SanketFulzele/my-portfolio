@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Github, Linkedin, Mail, Phone, MapPin, ExternalLink, Code, Briefcase, GraduationCap, Rocket, Menu, X, Send } from 'lucide-react';
 import "./myportfolio.css";
 import { toast } from "react-toastify";
+import emailjs from '@emailjs/browser';
 
 const MyPortfolio = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -48,54 +49,41 @@ const MyPortfolio = () => {
     });
   };
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      // const response = await fetch('http://localhost:5000/api/send-email', {
-      const response = await fetch('https://sanket-fulzele-portfolio-api.up.railway.app/api/send-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          subject: formData.subject,
-          description: formData.description,
-        }),
-      });
+  const EMAILJS_SERVICE_ID = 'service_601xgns';      // From EmailJS dashboard
+const EMAILJS_TEMPLATE_ID = 'template_e2gmjpe';    // From EmailJS dashboard
+const EMAILJS_PUBLIC_KEY = 'EvbYF4NbsZxLWe5Me';      // From EmailJS dashboard
 
-      const result = await response.json();
-
-      if (response.ok) {
-        toast.success('Email sent successfully!');
-      } else {
-        toast.error(`Error: ${result.error}`);
-      }
-    } catch (error) {
-      console.error('Error sending email:', error);
-      toast.error('Failed to send email');
-    } finally {
-      setLoading(false);
-    }
-
-    // Reset form 
-      setFormData({ email: '', subject: '', description: '' });
-  };
-
-  const fetchPortfolioData = async () => {
+ const handleFormSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  
   try {
-    const response = await fetch("https://sanket-fulzele-portfolio-api.up.railway.app");
-    if (!response.ok) {
-      throw new Error("API request failed");
-    }
-    return await response.json();
+    // Send email using EmailJS
+    const result = await emailjs.send(
+      EMAILJS_SERVICE_ID,
+      EMAILJS_TEMPLATE_ID,
+      {
+        from_email: formData.email,      // Sender's email
+        subject: formData.subject,        // Email subject
+        message: formData.description,    // Email message/description
+        to_email: 'sanketfulzelek6@gmail.com' // Your Gmail (recipient)
+      },
+      EMAILJS_PUBLIC_KEY
+    );
+
+    console.log('Email sent successfully:', result);
+    toast.success('Email sent successfully!');
+    
+    // Reset form on success
+    setFormData({ email: '', subject: '', description: '' });
+    
   } catch (error) {
-    console.error("Error fetching API:", error);
-    return null;
+    console.error('Error sending email:', error);
+    toast.error('Failed to send email. Please try again.');
+  } finally {
+    setLoading(false);
   }
 };
-
 
   const skills = [
     'React.js', 'Next.js', 'TypeScript', 'Redux', 'JavaScript',
@@ -207,7 +195,7 @@ const MyPortfolio = () => {
         <div className="hero-content">
           <div className="hero-text">
             <div className="hero-greeting">Hi, I'm</div>
-            <h1 className="hero-name" onClick={fetchPortfolioData}>Sanket Fulzele</h1>
+            <h1 className="hero-name">Sanket Fulzele</h1>
             <div className="hero-title">
               <span className="typing-text">Front-End Developer</span>
             </div>
