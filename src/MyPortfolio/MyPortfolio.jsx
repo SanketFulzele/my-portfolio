@@ -85,7 +85,7 @@ const MyPortfolio = () => {
 
   const fetchPortfolioData = async () => {
   try {
-    const response = await fetch("https://my-portfolio-api-3tz5.onrender.com");
+    const response = await fetch("https://sanket-fulzele-portfolio-api.up.railway.app");
     if (!response.ok) {
       throw new Error("API request failed");
     }
