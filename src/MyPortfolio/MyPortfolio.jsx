@@ -3,6 +3,7 @@ import { Github, Linkedin, Mail, Phone, MapPin, ExternalLink, Code, Briefcase, G
 import "./myportfolio.css";
 import { toast } from "react-toastify";
 import emailjs from '@emailjs/browser';
+import CursorFollower from '../CursorFollower/CursorFollower';
 
 
 const MyPortfolio = () => {
@@ -206,6 +207,9 @@ const MyPortfolio = () => {
 
   return (
     <div className="portfolio">
+
+        <CursorFollower />
+
       {/* Navigation */}
       <nav className="navbar">
         <div className="nav-container">
@@ -453,7 +457,7 @@ const MyPortfolio = () => {
       {/* Footer */}
       <footer className="footer">
         <div className="container">
-          <p>© 2025 Sanket Fulzele. Built with React & ❤️</p>
+          <p>© {new Date().getFullYear()} Sanket Fulzele. Built with React & ❤️</p>
         </div>
       </footer>
     </div>
