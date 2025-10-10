@@ -70,7 +70,7 @@ const FunFacts = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       handleCarouselNavigate('next');
-    }, 5000);
+    }, 15000);
 
     return () => clearInterval(interval);
   }, [isAnimating]);
