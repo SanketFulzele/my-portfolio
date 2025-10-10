@@ -4,6 +4,7 @@ import "./myportfolio.css";
 import { toast } from "react-toastify";
 import emailjs from '@emailjs/browser';
 import CursorFollower from '../CursorFollower/CursorFollower';
+import FunFacts from '../FunFacts/FunFacts';
 
 
 const MyPortfolio = () => {
@@ -12,7 +13,7 @@ const MyPortfolio = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
-    subject: '',
+    subject: '', 
     description: ''
   });
   const [loading, setLoading] = useState(false);
@@ -204,6 +205,8 @@ const MyPortfolio = () => {
       link: 'https://mahachai.in'
     }
   ];
+
+ 
 
   return (
     <div className="portfolio">
@@ -453,6 +456,11 @@ const MyPortfolio = () => {
           </div>
         </div>
       </section>
+
+
+
+   {/* FunFacts Section */}
+      <FunFacts/>
 
       {/* Footer */}
       <footer className="footer">

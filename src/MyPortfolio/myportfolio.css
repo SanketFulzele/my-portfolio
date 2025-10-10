@@ -845,7 +845,8 @@ section {
 
 /* Footer */
 .footer {
-  background: var(--bg-darker);
+  background: var(--bg-dark);
+  /* background: var(--bg-darker); */
   padding: 2rem;
   text-align: center;
   border-top: 1px solid rgba(99, 102, 241, 0.1);
