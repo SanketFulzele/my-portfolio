@@ -4,26 +4,26 @@ import './personalchatbot.css';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Message {
-  id: number;
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: Date;
+    id: number;
+    role: 'user' | 'assistant';
+    content: string;
+    timestamp: Date;
 }
 
 interface GeminiPart {
-  text?: string;
+    text?: string;
 }
 
 interface GeminiContent {
-  parts?: GeminiPart[];
+    parts?: GeminiPart[];
 }
 
 interface GeminiCandidate {
-  content?: GeminiContent;
+    content?: GeminiContent;
 }
 
 interface GeminiResponse {
-  candidates?: GeminiCandidate[];
+    candidates?: GeminiCandidate[];
 }
 
 // ─── Gemini Config ────────────────────────────────────────────────────────────
@@ -166,264 +166,310 @@ If asked "Who are you?" or "What is your name?":
 
 // ─── Gemini API Call ──────────────────────────────────────────────────────────
 const callGemini = async (messages: Message[]): Promise<string> => {
-  const contents = messages.map((m) => ({
-    role: m.role === 'assistant' ? 'model' : 'user',
-    parts: [{ text: m.content }],
-  }));
+    const contents = messages.map((m) => ({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: m.content }],
+    }));
 
-  const body = {
-    system_instruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
-    contents,
-    generationConfig: { maxOutputTokens: 200, temperature: 0.6 },
-  };
+    const body = {
+        system_instruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
+        contents,
+        generationConfig: { maxOutputTokens: 200, temperature: 0.6 },
+    };
 
-  const res = await fetch(GEMINI_API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+    const res = await fetch(GEMINI_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+    });
 
-  if (!res.ok) throw new Error(`Gemini API error: ${res.status}`);
-  const data: GeminiResponse = await res.json();
-  return (
-    data.candidates?.[0]?.content?.parts?.[0]?.text ??
-    'Sorry, I could not generate a response.'
-  );
+    if (!res.ok) throw new Error(`Gemini API error: ${res.status}`);
+    const data: GeminiResponse = await res.json();
+    return (
+        data.candidates?.[0]?.content?.parts?.[0]?.text ??
+        'Sorry, I could not generate a response.'
+    );
 };
 
 // ─── Quick Prompts ────────────────────────────────────────────────────────────
 const QUICK_PROMPTS: string[] = [
-  "What are Sanket's top skills?",
-  'Why should we hire Sanket?',
-  'What projects has Sanket built?',
-  'Is Sanket available to join immediately?',
-  'How can I contact Sanket?',
+    "What are Sanket's top skills?",
+    'Why should we hire Sanket?',
+    'What projects has Sanket built?',
+    'Is Sanket available to join immediately?',
+    'How can I contact Sanket?',
 ];
 
 // ─── Component ────────────────────────────────────────────────────────────────
 const PersonalChatbot: React.FC = () => {
-  const [isOpen, setIsOpen]               = useState<boolean>(false);
-  const [isMinimized, setIsMinimized]     = useState<boolean>(false);
-  const [messages, setMessages]           = useState<Message[]>([
-    {
-      id: 1,
-      role: 'assistant',
-      content: "Hey there! 👋 I'm Sparky, Sanket's personal AI assistant. Ask me anything about his skills, projects, or experience!",
-      timestamp: new Date(),
-    },
-  ]);
-  const [input, setInput]                   = useState<string>('');
-  const [loading, setLoading]               = useState<boolean>(false);
-  const [hasNewMessage, setHasNewMessage]   = useState<boolean>(false);
-
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef       = useRef<HTMLTextAreaElement>(null);
-
-  // Auto-scroll to latest message
-  useEffect(() => {
-    if (isOpen && !isMinimized) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [messages, isOpen, isMinimized]);
-
-  // Focus input when opened
-  useEffect(() => {
-    if (isOpen && !isMinimized) {
-      const timer = setTimeout(() => inputRef.current?.focus(), 300);
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen, isMinimized]);
-
-  const handleOpen = (): void => {
-    setIsOpen(true);
-    setIsMinimized(false);
-    setHasNewMessage(false);
-  };
-
-  const sendMessage = async (text?: string): Promise<void> => {
-    const trimmed = (text ?? input).trim();
-    if (!trimmed || loading) return;
-
-    const userMsg: Message = {
-      id: Date.now(),
-      role: 'user',
-      content: trimmed,
-      timestamp: new Date(),
-    };
-    const updatedMessages: Message[] = [...messages, userMsg];
-
-    setMessages(updatedMessages);
-    setInput('');
-    setLoading(true);
-
-    try {
-      const reply = await callGemini(updatedMessages);
-      const assistantMsg: Message = {
-        id: Date.now() + 1,
-        role: 'assistant',
-        content: reply,
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, assistantMsg]);
-      if (isMinimized) setHasNewMessage(true);
-    } catch {
-      setMessages((prev) => [
-        ...prev,
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [isMinimized, setIsMinimized] = useState<boolean>(false);
+    const [messages, setMessages] = useState<Message[]>([
         {
-          id: Date.now() + 1,
-          role: 'assistant',
-          content: '⚠️ Something went wrong. Please try again!',
-          timestamp: new Date(),
+            id: 1,
+            role: 'assistant',
+            content: "Hey there! 👋 I'm Sparky, Sanket's personal AI assistant. Ask me anything about his skills, projects, or experience!",
+            timestamp: new Date(),
         },
-      ]);
-    } finally {
-      setLoading(false);
-    }
-  };
+    ]);
+    const [input, setInput] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
+    const [hasNewMessage, setHasNewMessage] = useState<boolean>(false);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>): void => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      void sendMessage();
-    }
-  };
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  const formatTime = (date: Date): string =>
-    date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    // Auto-scroll to latest message
+    useEffect(() => {
+        if (isOpen && !isMinimized) {
+            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [messages, isOpen, isMinimized]);
 
-   // ─── Render ───────────────────────────────────────────────────────────────
-  return (
-    <>
-      {/* ── FAB Button ─────────────────────────────────────────────────── */}
-      {!isOpen && (
-        <button className="chatbot-fab" onClick={handleOpen} aria-label="Open chat">
-          <div className="fab-glow" />
-          <MessageCircle size={26} />
-          <span className="fab-label">Sparky</span>
-        </button>
-      )}
+    // Focus input when opened
+    useEffect(() => {
+        if (isOpen && !isMinimized) {
+            const timer = setTimeout(() => inputRef.current?.focus(), 300);
+            return () => clearTimeout(timer);
+        }
+    }, [isOpen, isMinimized]);
 
-      {/* ── Chat Window ────────────────────────────────────────────────── */}
-      {isOpen && (
-        <div className={`chatbot-window ${isMinimized ? 'minimized' : ''}`}>
+    const handleOpen = (): void => {
+        setIsOpen(true);
+        setIsMinimized(false);
+        setHasNewMessage(false);
+    };
 
-          {/* Header */}
-          <div className="chatbot-header">
-            <div className="chatbot-header-left">
-              <div className="chatbot-avatar">
-                <Bot size={18} />
-                <span className="avatar-pulse" />
-              </div>
-              <div className="chatbot-header-info">
-                <span className="chatbot-header-name">Sparky</span>
-                <span className="chatbot-header-status">
-                  <span className="status-dot" /> Sanket's AI Assistant
-                </span>
-              </div>
-            </div>
+    const sendMessage = async (text?: string): Promise<void> => {
+        const trimmed = (text ?? input).trim();
+        if (!trimmed || loading) return;
 
-            <div className="chatbot-header-actions">
-              <button
-                className="chatbot-icon-btn"
-                onClick={() => setIsMinimized((v) => !v)}
-                aria-label="Minimize"
-              >
-                <Minimize2 size={16} />
-              </button>
-              <button
-                className="chatbot-icon-btn close"
-                onClick={() => setIsOpen(false)}
-                aria-label="Close"
-              >
-                <X size={16} />
-              </button>
-            </div>
+        const userMsg: Message = {
+            id: Date.now(),
+            role: 'user',
+            content: trimmed,
+            timestamp: new Date(),
+        };
+        const updatedMessages: Message[] = [...messages, userMsg];
 
-            {hasNewMessage && isMinimized && (
-              <span className="chatbot-notif-badge">1</span>
+        setMessages(updatedMessages);
+        setInput('');
+        setLoading(true);
+
+        try {
+            const reply = await callGemini(updatedMessages);
+            const assistantMsg: Message = {
+                id: Date.now() + 1,
+                role: 'assistant',
+                content: reply,
+                timestamp: new Date(),
+            };
+            setMessages((prev) => [...prev, assistantMsg]);
+            if (isMinimized) setHasNewMessage(true);
+        } catch {
+            setMessages((prev) => [
+                ...prev,
+                {
+                    id: Date.now() + 1,
+                    role: 'assistant',
+                    content: '⚠️ Something went wrong. Please try again!',
+                    timestamp: new Date(),
+                },
+            ]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>): void => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            void sendMessage();
+        }
+    };
+
+    const formatTime = (date: Date): string =>
+        date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+
+    // ─── Markdown → JSX renderer (no extra dependency) ───────────────────────────
+    // Handles: **bold**, *italic*, `code`, bullet lines (• - *), plain links
+    const parseMarkdown = (text: string): React.ReactNode[] => {
+        const lines = text.split('\n');
+
+        return lines.map((line, lineIdx) => {
+            // Bullet lines: start with •, -, or "* " (not bold **)
+            const bulletMatch = line.match(/^[\s]*([•\-]|\*(?!\*))\s+(.+)/);
+            const content = bulletMatch ? bulletMatch[2] : line;
+
+            const renderInline = (str: string): React.ReactNode[] => {
+                // Split on **bold**, *italic*, `code`, and bare URLs
+                const parts = str.split(/(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`|https?:\/\/[^\s]+)/g);
+                return parts.map((part, i) => {
+                    if (/^\*\*[^*]+\*\*$/.test(part))
+                        return <strong key={i}>{part.slice(2, -2)}</strong>;
+                    if (/^\*[^*]+\*$/.test(part))
+                        return <em key={i}>{part.slice(1, -1)}</em>;
+                    if (/^`[^`]+`$/.test(part))
+                        return <code key={i} className="inline-code">{part.slice(1, -1)}</code>;
+                    if (/^https?:\/\/[^\s]+$/.test(part))
+                        return <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="msg-link">{part}</a>;
+                    return part;
+                });
+            };
+
+            const key = lineIdx;
+
+            if (bulletMatch) {
+                return (
+                    <div key={key} className="msg-bullet">
+                        <span className="msg-bullet-dot">•</span>
+                        <span>{renderInline(content)}</span>
+                    </div>
+                );
+            }
+
+            if (content.trim() === '') return <br key={key} />;
+
+            return <p key={key} className="msg-line">{renderInline(content)}</p>;
+        });
+    };
+
+    // ─── Render ───────────────────────────────────────────────────────────────
+    return (
+        <>
+            {/* ── FAB Button ─────────────────────────────────────────────────── */}
+            {!isOpen && (
+                <button className="chatbot-fab" onClick={handleOpen} aria-label="Open chat">
+                    <div className="fab-glow" />
+                    <MessageCircle size={26} />
+                    <span className="fab-label">Sparky</span>
+                </button>
             )}
-          </div>
 
-          {/* Body — smooth height + opacity transition on minimize/restore */}
-          <div className={`chatbot-body${isMinimized ? ' chatbot-body--hidden' : ''}`}>
+            {/* ── Chat Window ────────────────────────────────────────────────── */}
+            {isOpen && (
+                <div className={`chatbot-window ${isMinimized ? 'minimized' : ''}`}>
 
-            {/* Messages */}
-            <div className="chatbot-messages">
-              {messages.map((msg) => (
-                <div key={msg.id} className={`chat-message ${msg.role}`}>
-                  <div className="message-icon">
-                    {msg.role === 'assistant' ? <Bot size={14} /> : <User size={14} />}
-                  </div>
-                  <div className="message-bubble">
-                    <p>{msg.content}</p>
-                    <span className="message-time">{formatTime(msg.timestamp)}</span>
-                  </div>
+                    {/* Header */}
+                    <div className="chatbot-header">
+                        <div className="chatbot-header-left">
+                            <div className="chatbot-avatar">
+                                <Bot size={18} />
+                                <span className="avatar-pulse" />
+                            </div>
+                            <div className="chatbot-header-info">
+                                <span className="chatbot-header-name">Sparky</span>
+                                <span className="chatbot-header-status">
+                                    <span className="status-dot" /> Sanket's AI Assistant
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="chatbot-header-actions">
+                            <button
+                                className="chatbot-icon-btn"
+                                onClick={() => setIsMinimized((v) => !v)}
+                                aria-label="Minimize"
+                            >
+                                <Minimize2 size={16} />
+                            </button>
+                            <button
+                                className="chatbot-icon-btn close"
+                                onClick={() => setIsOpen(false)}
+                                aria-label="Close"
+                            >
+                                <X size={16} />
+                            </button>
+                        </div>
+
+                        {hasNewMessage && isMinimized && (
+                            <span className="chatbot-notif-badge">1</span>
+                        )}
+                    </div>
+
+                    {/* Body — smooth height + opacity transition on minimize/restore */}
+                    <div className={`chatbot-body${isMinimized ? ' chatbot-body--hidden' : ''}`}>
+
+                        {/* Messages */}
+                        <div className="chatbot-messages">
+                            {messages.map((msg) => (
+                                <div key={msg.id} className={`chat-message ${msg.role}`}>
+                                    <div className="message-icon">
+                                        {msg.role === 'assistant' ? <Bot size={14} /> : <User size={14} />}
+                                    </div>
+                                    <div className="message-bubble">
+                                        <div className="msg-content">
+                                            {msg.role === 'assistant' ? parseMarkdown(msg.content) : msg.content}
+                                        </div>
+                                        <span className="message-time">{formatTime(msg.timestamp)}</span>
+                                    </div>
+                                </div>
+                            ))}
+
+                            {/* Typing indicator */}
+                            {loading && (
+                                <div className="chat-message assistant">
+                                    <div className="message-icon">
+                                        <Bot size={14} />
+                                    </div>
+                                    <div className="message-bubble typing">
+                                        <span /><span /><span />
+                                    </div>
+                                </div>
+                            )}
+                            <div ref={messagesEndRef} />
+                        </div>
+
+                        {/* Quick Prompts — shown only on first load */}
+                        {messages.length === 1 && (
+                            <div className="quick-prompts">
+                                <p className="quick-prompts-label">
+                                    <Sparkles size={12} /> Quick questions
+                                </p>
+                                <div className="quick-prompts-list">
+                                    {QUICK_PROMPTS.map((q) => (
+                                        <button
+                                            key={q}
+                                            className="quick-prompt-btn"
+                                            onClick={() => void sendMessage(q)}
+                                        >
+                                            {q}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Input */}
+                        <div className="chatbot-input-area">
+                            <textarea
+                                ref={inputRef}
+                                className="chatbot-input"
+                                value={input}
+                                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                                    setInput(e.target.value)
+                                }
+                                onKeyDown={handleKeyDown}
+                                placeholder="Ask me about Sanket..."
+                                rows={1}
+                                disabled={loading}
+                            />
+                            <button
+                                className="chatbot-send-btn"
+                                onClick={() => void sendMessage()}
+                                disabled={!input.trim() || loading}
+                                aria-label="Send"
+                            >
+                                <Send size={16} />
+                            </button>
+                        </div>
+
+                    </div>
                 </div>
-              ))}
-
-              {/* Typing indicator */}
-              {loading && (
-                <div className="chat-message assistant">
-                  <div className="message-icon">
-                    <Bot size={14} />
-                  </div>
-                  <div className="message-bubble typing">
-                    <span /><span /><span />
-                  </div>
-                </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
-
-            {/* Quick Prompts — shown only on first load */}
-            {messages.length === 1 && (
-              <div className="quick-prompts">
-                <p className="quick-prompts-label">
-                  <Sparkles size={12} /> Quick questions
-                </p>
-                <div className="quick-prompts-list">
-                  {QUICK_PROMPTS.map((q) => (
-                    <button
-                      key={q}
-                      className="quick-prompt-btn"
-                      onClick={() => void sendMessage(q)}
-                    >
-                      {q}
-                    </button>
-                  ))}
-                </div>
-              </div>
             )}
-
-            {/* Input */}
-            <div className="chatbot-input-area">
-              <textarea
-                ref={inputRef}
-                className="chatbot-input"
-                value={input}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                  setInput(e.target.value)
-                }
-                onKeyDown={handleKeyDown}
-                placeholder="Ask me about Sanket..."
-                rows={1}
-                disabled={loading}
-              />
-              <button
-                className="chatbot-send-btn"
-                onClick={() => void sendMessage()}
-                disabled={!input.trim() || loading}
-                aria-label="Send"
-              >
-                <Send size={16} />
-              </button>
-            </div>
-
-          </div>
-        </div>
-      )}
-    </>
-  );
+        </>
+    );
 };
 
 export default PersonalChatbot;
