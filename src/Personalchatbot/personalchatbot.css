@@ -590,7 +590,7 @@
   .chatbot-window {
     left:   12px;
     right:  12px;
-    bottom: 76px;           /* sits above FAB with gap    */
+    bottom: 12px;           /* sits above FAB with gap    */
     width:  auto;           /* fills left→right margins   */
     max-height: 74vh;
     border-radius: 20px;    /* fully rounded on all sides */

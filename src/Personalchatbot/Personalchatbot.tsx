@@ -299,7 +299,7 @@ const PersonalChatbot: React.FC = () => {
         <button className="chatbot-fab" onClick={handleOpen} aria-label="Open chat">
           <div className="fab-glow" />
           <MessageCircle size={26} />
-          <span className="fab-label">Chat with Sparky ✨</span>
+          <span className="fab-label">Sparky</span>
         </button>
       )}
 
@@ -315,7 +315,7 @@ const PersonalChatbot: React.FC = () => {
                 <span className="avatar-pulse" />
               </div>
               <div className="chatbot-header-info">
-                <span className="chatbot-header-name">Sparky ✨</span>
+                <span className="chatbot-header-name">Sparky</span>
                 <span className="chatbot-header-status">
                   <span className="status-dot" /> Sanket's AI Assistant
                 </span>
