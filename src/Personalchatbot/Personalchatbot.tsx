@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, X, Send, Bot, User, Minimize2, Sparkles } from 'lucide-react';
-import './personalChatbot.css';
+import './personalchatbot.css';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Message {
