@@ -155,7 +155,7 @@ Tools       : Git, REST APIs, Socket.IO, AWS, Vercel (CI/CD), React Leaflet
 - Phone: 8381001406
 - LinkedIn: https://www.linkedin.com/in/sanketfulzele/
 - GitHub: https://github.com/SanketFulzele
-- Available to join within 15 days ✅
+- Available to join within 15 days 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🙋 IDENTITY
@@ -291,7 +291,7 @@ const PersonalChatbot: React.FC = () => {
   const formatTime = (date: Date): string =>
     date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-  // ─── Render ───────────────────────────────────────────────────────────────
+   // ─── Render ───────────────────────────────────────────────────────────────
   return (
     <>
       {/* ── FAB Button ─────────────────────────────────────────────────── */}
@@ -299,7 +299,7 @@ const PersonalChatbot: React.FC = () => {
         <button className="chatbot-fab" onClick={handleOpen} aria-label="Open chat">
           <div className="fab-glow" />
           <MessageCircle size={26} />
-          <span className="fab-label">Chat with Sparky</span>
+          <span className="fab-label">Chat with Sparky ✨</span>
         </button>
       )}
 
@@ -315,7 +315,7 @@ const PersonalChatbot: React.FC = () => {
                 <span className="avatar-pulse" />
               </div>
               <div className="chatbot-header-info">
-                <span className="chatbot-header-name">Sparky</span>
+                <span className="chatbot-header-name">Sparky ✨</span>
                 <span className="chatbot-header-status">
                   <span className="status-dot" /> Sanket's AI Assistant
                 </span>
@@ -344,82 +344,82 @@ const PersonalChatbot: React.FC = () => {
             )}
           </div>
 
-          {/* Body — hidden when minimized */}
-          {!isMinimized && (
-            <>
-              {/* Messages */}
-              <div className="chatbot-messages">
-                {messages.map((msg) => (
-                  <div key={msg.id} className={`chat-message ${msg.role}`}>
-                    <div className="message-icon">
-                      {msg.role === 'assistant' ? <Bot size={14} /> : <User size={14} />}
-                    </div>
-                    <div className="message-bubble">
-                      <p>{msg.content}</p>
-                      <span className="message-time">{formatTime(msg.timestamp)}</span>
-                    </div>
-                  </div>
-                ))}
+          {/* Body — smooth height + opacity transition on minimize/restore */}
+          <div className={`chatbot-body${isMinimized ? ' chatbot-body--hidden' : ''}`}>
 
-                {/* Typing indicator */}
-                {loading && (
-                  <div className="chat-message assistant">
-                    <div className="message-icon">
-                      <Bot size={14} />
-                    </div>
-                    <div className="message-bubble typing">
-                      <span /><span /><span />
-                    </div>
+            {/* Messages */}
+            <div className="chatbot-messages">
+              {messages.map((msg) => (
+                <div key={msg.id} className={`chat-message ${msg.role}`}>
+                  <div className="message-icon">
+                    {msg.role === 'assistant' ? <Bot size={14} /> : <User size={14} />}
                   </div>
-                )}
-                <div ref={messagesEndRef} />
-              </div>
+                  <div className="message-bubble">
+                    <p>{msg.content}</p>
+                    <span className="message-time">{formatTime(msg.timestamp)}</span>
+                  </div>
+                </div>
+              ))}
 
-              {/* Quick Prompts — shown only on first load */}
-              {messages.length === 1 && (
-                <div className="quick-prompts">
-                  <p className="quick-prompts-label">
-                    <Sparkles size={12} /> Quick questions
-                  </p>
-                  <div className="quick-prompts-list">
-                    {QUICK_PROMPTS.map((q) => (
-                      <button
-                        key={q}
-                        className="quick-prompt-btn"
-                        onClick={() => void sendMessage(q)}
-                      >
-                        {q}
-                      </button>
-                    ))}
+              {/* Typing indicator */}
+              {loading && (
+                <div className="chat-message assistant">
+                  <div className="message-icon">
+                    <Bot size={14} />
+                  </div>
+                  <div className="message-bubble typing">
+                    <span /><span /><span />
                   </div>
                 </div>
               )}
+              <div ref={messagesEndRef} />
+            </div>
 
-              {/* Input */}
-              <div className="chatbot-input-area">
-                <textarea
-                  ref={inputRef}
-                  className="chatbot-input"
-                  value={input}
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                    setInput(e.target.value)
-                  }
-                  onKeyDown={handleKeyDown}
-                  placeholder="Ask me about Sanket..."
-                  rows={1}
-                  disabled={loading}
-                />
-                <button
-                  className="chatbot-send-btn"
-                  onClick={() => void sendMessage()}
-                  disabled={!input.trim() || loading}
-                  aria-label="Send"
-                >
-                  <Send size={16} />
-                </button>
+            {/* Quick Prompts — shown only on first load */}
+            {messages.length === 1 && (
+              <div className="quick-prompts">
+                <p className="quick-prompts-label">
+                  <Sparkles size={12} /> Quick questions
+                </p>
+                <div className="quick-prompts-list">
+                  {QUICK_PROMPTS.map((q) => (
+                    <button
+                      key={q}
+                      className="quick-prompt-btn"
+                      onClick={() => void sendMessage(q)}
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </>
-          )}
+            )}
+
+            {/* Input */}
+            <div className="chatbot-input-area">
+              <textarea
+                ref={inputRef}
+                className="chatbot-input"
+                value={input}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                  setInput(e.target.value)
+                }
+                onKeyDown={handleKeyDown}
+                placeholder="Ask me about Sanket..."
+                rows={1}
+                disabled={loading}
+              />
+              <button
+                className="chatbot-send-btn"
+                onClick={() => void sendMessage()}
+                disabled={!input.trim() || loading}
+                aria-label="Send"
+              >
+                <Send size={16} />
+              </button>
+            </div>
+
+          </div>
         </div>
       )}
     </>
