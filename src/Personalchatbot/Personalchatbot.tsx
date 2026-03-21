@@ -10,45 +10,171 @@ interface Message {
   timestamp: Date;
 }
 
+interface GeminiPart {
+  text?: string;
+}
+
+interface GeminiContent {
+  parts?: GeminiPart[];
+}
+
+interface GeminiCandidate {
+  content?: GeminiContent;
+}
+
 interface GeminiResponse {
-  candidates?: Array<{
-    content?: {
-      parts?: Array<{
-        text?: string;
-      }>;
-    };
-  }>;
+  candidates?: GeminiCandidate[];
 }
 
 // ─── Gemini Config ────────────────────────────────────────────────────────────
-const GEMINI_API_KEY = 'AIzaSyAQI1Q1Gr4ylxKKpOoMWEeyt3OD--BFeq4'; 
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 const SYSTEM_INSTRUCTION = `
-You are Sanket Fulzele's personal AI assistant embedded in his portfolio website.
-Your job is to answer questions about Sanket — his skills, experience, projects, and background.
-Be friendly, professional, and concise. Always stay on topic about Sanket.
+You are Sparky — Sanket Fulzele's personal AI assistant, built specifically for recruiters and visitors on his portfolio website.
+Your personality: friendly, professional, and efficient. Use light emojis occasionally to keep the tone warm.
+Your ONLY job is to answer questions about Sanket. Never go off-topic. Never answer general coding questions or anything unrelated to him.
 
-Here is Sanket's information:
-[TODO: Add your personal info here — skills, experience, education, projects, contact, etc.]
+If someone asks something unrelated to Sanket, respond with:
+"I'm Sparky, Sanket's personal assistant! I can only help you learn about him. Try asking about his skills, availability, or projects! 😊"
 
-If someone asks something unrelated to Sanket, politely redirect them:
-"I'm here specifically to help you learn about Sanket Fulzele! Ask me about his skills, projects, or experience."
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📐 RESPONSE STYLE RULES  ← follow these strictly on every reply
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Keep every reply to 2–3 lines MAX, or a short bullet list (3–5 bullets max).
+• Never write long paragraphs. Recruiters are busy — be scannable.
+• Prefer bullet points over prose whenever listing skills, projects, or experience.
+• Use numbers and metrics when available (e.g. "40% faster load time").
+• End with a short follow-up nudge like "Want more details? Just ask! 😊" only when truly helpful.
+• Never repeat the same information twice in a reply.
+• Do not add unnecessary filler phrases like "Great question!" or "Certainly!".
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+👤 PERSONAL INFO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Full Name: Sanket Fulzele
+- Date of Birth: 19 June 2002 (age 23)
+- Location: Nagpur, Maharashtra, India
+- Email: sanketfulzelek6@gmail.com
+- Phone: 8381001406
+- LinkedIn: https://www.linkedin.com/in/sanketfulzele/
+- GitHub: https://github.com/SanketFulzele
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🟢 AVAILABILITY  ← answer this immediately and confidently
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Sanket is actively looking for new opportunities.
+- He can join a new company within 15 days of receiving an offer.
+- Open to full-time roles, freelance projects, and collaborations.
+- Best way to reach him: sanketfulzelek6@gmail.com | LinkedIn: https://www.linkedin.com/in/sanketfulzele/
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎓 EDUCATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Degree: Bachelor of Commerce (B.Com)
+- University: Yashwantrao Chavan Maharashtra University, Butibori, Maharashtra
+- Graduated: 2023
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💼 PROFESSIONAL SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+React.js Developer with 4+ years of experience building responsive, high-performance web applications.
+Expert in React.js, Next.js, TypeScript, Redux, and performance optimization (useMemo, React.memo, lazy loading).
+Delivered results across logistics, HR, compliance, and e-commerce — improved load times by up to 40%, reduced onboarding time by 60%, and boosted Lighthouse scores by 30%.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏆 WHY HIRE SANKET?  ← use this section for "why should we hire" questions
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• 4+ years of React.js expertise with real, measurable impact across multiple industries.
+• Architected full apps from scratch — not just a feature developer.
+• Strong in performance: improved load times by 40%, Lighthouse scores by 30%.
+• Delivered enterprise-grade projects: DSP Mutual Fund HRMS, Grant Thornton CMS, logistics platforms.
+• Can join within 15 days. Available now.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🛠️ TECHNICAL SKILLS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Languages   : JavaScript (ES6+), TypeScript, HTML5, CSS3
+Frameworks  : React.js, Next.js, Redux, Zustand, PWA, Bootstrap, Tailwind CSS
+React Skills: Hooks, useMemo, useReducer, React.memo, useCallback, Custom Hooks, Code Splitting, Lazy Loading
+Tools       : Git, REST APIs, Socket.IO, AWS, Vercel (CI/CD), React Leaflet
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏢 WORK EXPERIENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Paramaya Technology Services Pvt Ltd — Software Engineer I
+   Sep 2024 – Present | Nagpur, Maharashtra
+   • Architected React.js + TypeScript app from scratch; defined architecture adopted by full team.
+   • JSON-driven rendering system cut new-page dev time by ~50%.
+   • React.memo + useMemo + lazy loading improved page responsiveness by ~25%.
+
+2. TechnoBase IT Solutions Pvt Ltd — Software Engineer I
+   Jun 2023 – Sep 2024 | Nagpur, Maharashtra
+   • Built reusable component library used across 3+ projects; reduced duplicate code by ~40%.
+   • Integrated Socket.IO + AWS; reduced operational downtime by 35% for 5,000+ active users.
+   • Optimized 4+ websites: Lighthouse scores up 30%, avg load time dropped from 4s → 2.5s.
+
+3. TrickySys IT Solutions — Software Engineer I
+   May 2022 – Jun 2023 | Nagpur, Maharashtra
+   • Built MERN hotel booking app supporting 1,000+ concurrent users; page load times cut by 40%.
+   • On-time delivery across all major releases using agile workflows.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀 PROJECTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. LMS – Logistics Management System
+   Tech: React.js, TypeScript, Redux, Socket.IO
+   • Role-based platform for suppliers, admins, drivers with full order lifecycle management.
+   • Barcode scanning (webcam + mobile) cut item errors by ~30%.
+   • Real-time live tracking via Socket.IO + React Leaflet for 10+ concurrent drivers.
+
+2. Paramaya Website — React.js, TypeScript, Redux
+   • Modular architecture; 90+ Lighthouse score. JSON-driven pages cut dev time by ~50%.
+
+3. EzeeDesk — Next.js, Redux
+   • AI Chatbot, multi-language support (5+ languages), real-time notifications. +20% user engagement.
+
+4. Grant Thornton CMS — Next.js, Redux
+   • Enterprise compliance system; integrated 3+ regulatory frameworks; audit prep time down 40%.
+
+5. DSP Mutual Fund HRMS — Next.js, Redux, AWS
+   • HRMS for 500+ employees on AWS; onboarding time cut by 60%, HR efficiency up 45%.
+
+6. MyResorts.in — React.js, Redux | https://myresorts.in
+   • Resort booking with 50+ listings, complex fare calculation, secure payments. +30% bookings in 3 months.
+
+7. Mahachai.in — HTML, CSS, Bootstrap | https://mahachai.in
+   • Marketing site optimized for Core Web Vitals. +25% company sales in 6 months.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📬 CONTACT SANKET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Email: sanketfulzelek6@gmail.com
+- Phone: 8381001406
+- LinkedIn: https://www.linkedin.com/in/sanketfulzele/
+- GitHub: https://github.com/SanketFulzele
+- Available to join within 15 days ✅
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🙋 IDENTITY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+If asked "Who are you?" or "What is your name?":
+"I'm Sparky — Sanket's personal AI assistant! Ask me about his skills, projects, or availability. 😊"
 `;
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Gemini API Call ──────────────────────────────────────────────────────────
 const callGemini = async (messages: Message[]): Promise<string> => {
-  const contents = messages
-    .filter((m) => m.role !== 'system')
-    .map((m) => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: m.content }],
-    }));
+  const contents = messages.map((m) => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content }],
+  }));
 
   const body = {
     system_instruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
     contents,
-    generationConfig: { maxOutputTokens: 512, temperature: 0.7 },
+    generationConfig: { maxOutputTokens: 200, temperature: 0.6 },
   };
 
   const res = await fetch(GEMINI_API_URL, {
@@ -59,34 +185,39 @@ const callGemini = async (messages: Message[]): Promise<string> => {
 
   if (!res.ok) throw new Error(`Gemini API error: ${res.status}`);
   const data: GeminiResponse = await res.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not generate a response.';
+  return (
+    data.candidates?.[0]?.content?.parts?.[0]?.text ??
+    'Sorry, I could not generate a response.'
+  );
 };
 
+// ─── Quick Prompts ────────────────────────────────────────────────────────────
 const QUICK_PROMPTS: string[] = [
-  'What are your top skills?',
-  'Tell me about your experience',
-  'What projects have you built?',
-  'How can I contact you?',
+  "What are Sanket's top skills?",
+  'Why should we hire Sanket?',
+  'What projects has Sanket built?',
+  'Is Sanket available to join immediately?',
+  'How can I contact Sanket?',
 ];
 
 // ─── Component ────────────────────────────────────────────────────────────────
 const PersonalChatbot: React.FC = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isMinimized, setIsMinimized] = useState<boolean>(false);
-  const [messages, setMessages] = useState<Message[]>([
+  const [isOpen, setIsOpen]               = useState<boolean>(false);
+  const [isMinimized, setIsMinimized]     = useState<boolean>(false);
+  const [messages, setMessages]           = useState<Message[]>([
     {
       id: 1,
       role: 'assistant',
-      content: "Hey there! 👋 I'm Sanket's AI assistant. Ask me anything about his skills, projects, or experience!",
+      content: "Hey there! 👋 I'm Sparky, Sanket's personal AI assistant. Ask me anything about his skills, projects, or experience!",
       timestamp: new Date(),
     },
   ]);
-  const [input, setInput] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [hasNewMessage, setHasNewMessage] = useState<boolean>(false);
+  const [input, setInput]                   = useState<string>('');
+  const [loading, setLoading]               = useState<boolean>(false);
+  const [hasNewMessage, setHasNewMessage]   = useState<boolean>(false);
 
-  const messagesEndRef = useRef(null);
-  const inputRef = useRef(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef       = useRef<HTMLTextAreaElement>(null);
 
   // Auto-scroll to latest message
   useEffect(() => {
@@ -98,22 +229,28 @@ const PersonalChatbot: React.FC = () => {
   // Focus input when opened
   useEffect(() => {
     if (isOpen && !isMinimized) {
-      setTimeout(() => inputRef.current?.focus(), 300);
+      const timer = setTimeout(() => inputRef.current?.focus(), 300);
+      return () => clearTimeout(timer);
     }
   }, [isOpen, isMinimized]);
 
-  const handleOpen = () => {
+  const handleOpen = (): void => {
     setIsOpen(true);
     setIsMinimized(false);
     setHasNewMessage(false);
   };
 
   const sendMessage = async (text?: string): Promise<void> => {
-    const trimmed = (text || input).trim();
+    const trimmed = (text ?? input).trim();
     if (!trimmed || loading) return;
 
-    const userMsg: Message = { id: Date.now(), role: 'user', content: trimmed, timestamp: new Date() };
-    const updatedMessages = [...messages, userMsg];
+    const userMsg: Message = {
+      id: Date.now(),
+      role: 'user',
+      content: trimmed,
+      timestamp: new Date(),
+    };
+    const updatedMessages: Message[] = [...messages, userMsg];
 
     setMessages(updatedMessages);
     setInput('');
@@ -121,9 +258,13 @@ const PersonalChatbot: React.FC = () => {
 
     try {
       const reply = await callGemini(updatedMessages);
-      const assistantMsg: Message = { id: Date.now() + 1, role: 'assistant', content: reply, timestamp: new Date() };
+      const assistantMsg: Message = {
+        id: Date.now() + 1,
+        role: 'assistant',
+        content: reply,
+        timestamp: new Date(),
+      };
       setMessages((prev) => [...prev, assistantMsg]);
-
       if (isMinimized) setHasNewMessage(true);
     } catch {
       setMessages((prev) => [
@@ -140,10 +281,10 @@ const PersonalChatbot: React.FC = () => {
     }
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>): void => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      sendMessage();
+      void sendMessage();
     }
   };
 
@@ -153,16 +294,16 @@ const PersonalChatbot: React.FC = () => {
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
     <>
-      {/* ── FAB Button ─────────────────────────────────────────────────────── */}
+      {/* ── FAB Button ─────────────────────────────────────────────────── */}
       {!isOpen && (
         <button className="chatbot-fab" onClick={handleOpen} aria-label="Open chat">
           <div className="fab-glow" />
           <MessageCircle size={26} />
-          <span className="fab-label">Chat with AI</span>
+          <span className="fab-label">Chat with Sparky</span>
         </button>
       )}
 
-      {/* ── Chat Window ────────────────────────────────────────────────────── */}
+      {/* ── Chat Window ────────────────────────────────────────────────── */}
       {isOpen && (
         <div className={`chatbot-window ${isMinimized ? 'minimized' : ''}`}>
 
@@ -174,12 +315,13 @@ const PersonalChatbot: React.FC = () => {
                 <span className="avatar-pulse" />
               </div>
               <div className="chatbot-header-info">
-                <span className="chatbot-header-name">Sanket's AI</span>
+                <span className="chatbot-header-name">Sparky</span>
                 <span className="chatbot-header-status">
-                  <span className="status-dot" /> Online
+                  <span className="status-dot" /> Sanket's AI Assistant
                 </span>
               </div>
             </div>
+
             <div className="chatbot-header-actions">
               <button
                 className="chatbot-icon-btn"
@@ -196,12 +338,13 @@ const PersonalChatbot: React.FC = () => {
                 <X size={16} />
               </button>
             </div>
+
             {hasNewMessage && isMinimized && (
               <span className="chatbot-notif-badge">1</span>
             )}
           </div>
 
-          {/* Body (hidden when minimized) */}
+          {/* Body — hidden when minimized */}
           {!isMinimized && (
             <>
               {/* Messages */}
@@ -232,7 +375,7 @@ const PersonalChatbot: React.FC = () => {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Quick Prompts */}
+              {/* Quick Prompts — shown only on first load */}
               {messages.length === 1 && (
                 <div className="quick-prompts">
                   <p className="quick-prompts-label">
@@ -240,7 +383,11 @@ const PersonalChatbot: React.FC = () => {
                   </p>
                   <div className="quick-prompts-list">
                     {QUICK_PROMPTS.map((q) => (
-                      <button key={q} className="quick-prompt-btn" onClick={() => sendMessage(q)}>
+                      <button
+                        key={q}
+                        className="quick-prompt-btn"
+                        onClick={() => void sendMessage(q)}
+                      >
                         {q}
                       </button>
                     ))}
@@ -254,7 +401,9 @@ const PersonalChatbot: React.FC = () => {
                   ref={inputRef}
                   className="chatbot-input"
                   value={input}
-                  onChange={(e) => setInput(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                    setInput(e.target.value)
+                  }
                   onKeyDown={handleKeyDown}
                   placeholder="Ask me about Sanket..."
                   rows={1}
@@ -262,7 +411,7 @@ const PersonalChatbot: React.FC = () => {
                 />
                 <button
                   className="chatbot-send-btn"
-                  onClick={() => sendMessage()}
+                  onClick={() => void sendMessage()}
                   disabled={!input.trim() || loading}
                   aria-label="Send"
                 >
