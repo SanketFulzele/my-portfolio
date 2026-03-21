@@ -5,10 +5,11 @@ import { toast } from "react-toastify";
 import emailjs from '@emailjs/browser';
 import CursorFollower from '../CursorFollower/CursorFollower';
 import FunFacts from '../FunFacts/FunFacts';
+import PersonalChatbot from '../Personalchatbot/Personalchatbot';
 
 
 const MyPortfolio = () => {
-  const [scrollY, setScrollY] = useState(0);
+  // const [scrollY, setScrollY] = useState(0);
   const [activeSection, setActiveSection] = useState('home');
   const [menuOpen, setMenuOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -21,7 +22,7 @@ const MyPortfolio = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrollY(window.scrollY);
+      // setScrollY(window.scrollY);
 
       const sections = ['home', 'about', 'experience', 'projects', 'contact'];
       const current = sections.find(section => {
@@ -250,7 +251,7 @@ const MyPortfolio = () => {
               <span className="typing-text">Front-End Developer</span>
             </div>
             <p className="hero-description">
-              3+ years of experience crafting exceptional web applications with React, Next.js, and modern technologies
+              4+ years of experience crafting exceptional web applications with React, Next.js, and modern technologies
             </p>
             <div className="hero-buttons">
               <a href="#projects" className="btn btn-primary">
@@ -468,6 +469,9 @@ const MyPortfolio = () => {
           <p>© {new Date().getFullYear()} Sanket Fulzele. Built with React & ❤️</p>
         </div>
       </footer>
+
+<PersonalChatbot />
+
     </div>
   );
 };
