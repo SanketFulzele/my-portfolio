@@ -184,7 +184,7 @@ const callGemini = async (messages: Message[]): Promise<string> => {
     const body = {
         system_instruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
         contents,
-        generationConfig: { maxOutputTokens: 200, temperature: 0.6 },
+        generationConfig: {  maxOutputTokens: 200, temperature: 0.4, topP: 0.9 },
     };
 
     const res = await fetch(GEMINI_API_URL, {
