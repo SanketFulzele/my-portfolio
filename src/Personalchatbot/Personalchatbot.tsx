@@ -282,7 +282,7 @@ const PersonalChatbot: React.FC = () => {
                 {
                     id: Date.now() + 1,
                     role: 'assistant',
-                    content: '⚠️ Something went wrong. Please try again!',
+                    content: '⚠️ API usage limit exceeded. Please change the API key.',
                     timestamp: new Date(),
                 },
             ]);
